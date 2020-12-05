@@ -7,210 +7,85 @@ categories:
 - Görüntü İşleme Uygulamaları
 - Lineer Cebir
 - Nümerik Yöntemler
-thumbnail: resources//thumbnail.png 
+references: "Poisson Image Editing"
+thumbnail: /assets/post_resources/poisson_image_editing/thumbnail.png 
 ---
 Görüntü düzenleme (image editing), imge üzerinde yer alan renklerin evrensel veya yerel ilişkiler ile değiştirilmesi işlemidir. Önceki yazılarımızda bahsettiğimiz Renk Dönüşümleri, Instagram Filtreleme Yöntemleri gibi yöntemler imge üzerinde evrensel ilişkiler ile dönüşüm yaparken, bu yazımızın konusu olan Poisson eşitliği yardımıyla görüntü düzenleme algoritması yerel ilişkilere dayalı bir dönüşüm işlemidir. Patrick Pérez ve arkadaşları tarafından 2003 yılında önerilen bu yöntem basit bir anlatımla verilen bir imgenin (kaynak:source) gradyanını elimizde bulunan bir başka imgeye (hedef:target) kopyalama işlemidir. Bu kopyalama işlemi sonucunda kaynak imgenin dokusu (gradyanı) hedef imge içerisine yerleştirilmiş olur.
 
 <!--more-->
-$\mathbf{I}$ çıktı imgesini, $\mathbf{T}$ kopyalamanın yapılacağı arka plan imgesini, $\mathbf{S}$ kopyalanacak kaynak imgeyi ve $\Omega$ kopyalanacak bölgeye ait sınır maskesini göstermek üzere; önerilen yöntem aşağıdaki hata fonksiyonunu en küçüklemeye çalışmaktadır.
+<img src="assets/post_resources/math//d8471e559d932f20f66bec32f6002e08.svg?invert_in_darkmode" align=middle width=7.168923299999991pt height=22.55708729999998pt/> çıktı imgesini, <img src="assets/post_resources/math//02f380174e367c8935a57f86907fc7da.svg?invert_in_darkmode" align=middle width=13.15061054999999pt height=22.55708729999998pt/> kopyalamanın yapılacağı arka plan imgesini, <img src="assets/post_resources/math//4870d18d47ab6d0e32510c4b1ccf4927.svg?invert_in_darkmode" align=middle width=10.502226899999991pt height=22.55708729999998pt/> kopyalanacak kaynak imgeyi ve <img src="assets/post_resources/math//9432d83304c1eb0dcb05f092d30a767f.svg?invert_in_darkmode" align=middle width=11.87217899999999pt height=22.465723500000017pt/> kopyalanacak bölgeye ait sınır maskesini göstermek üzere; önerilen yöntem aşağıdaki hata fonksiyonunu en küçüklemeye çalışmaktadır.
 
-$$
-\begin{aligned}
-\min_{I(x,y) \in \Omega} \sum_{\Omega} \lVert\nabla I(x,y)-\nabla S(x,y)\rVert \\
-\text{subject to} \quad I(x,y)=T(x,y) \text{ on } \partial \Omega
-\end{aligned}
-\label{cost} \tag{1}
-$$
+<p align="center"><img src="assets/post_resources/math//ced3ac99b92784004b9ee9df631e6c6e.svg?invert_in_darkmode" align=middle width=256.6363635pt height=63.041253pt/></p>
 
-Denklem \ref{cost} dan da görüldüğü üzere yöntem hata değeri olarak $\Omega$ bölgesi içerisinde çıktının imgesinin gradyanını kaynak imgenin gradyanına olabildiğince yakın olmaya zorlamaktadır. Tek başına bu maliyet fonksiyonu $I(x,y) = S(x,y),\; \forall x,y \in \Omega$ olmayı zorlasa da denklemde yer alan $I(x,y)=T(x,y), \; \forall x,y \in \partial \Omega$ kısıtı kaynak imgenin izsiz (seamless) bir şekilde hedef imgeye yerleştirilmesini sağlamaktadır. Yöntemin anlaşılması için matematiksel detaylarına devam etmeden önce şu ana kadar verdiğimiz matematiksel ifadeleri bir örnek üzerinde inceleyelim.
+Denklem \ref{cost} dan da görüldüğü üzere yöntem hata değeri olarak <img src="assets/post_resources/math//9432d83304c1eb0dcb05f092d30a767f.svg?invert_in_darkmode" align=middle width=11.87217899999999pt height=22.465723500000017pt/> bölgesi içerisinde çıktının imgesinin gradyanını kaynak imgenin gradyanına olabildiğince yakın olmaya zorlamaktadır. Tek başına bu maliyet fonksiyonu <img src="assets/post_resources/math//a0e3218e2e230cef11021acd2f69a694.svg?invert_in_darkmode" align=middle width=196.04982539999997pt height=24.65753399999998pt/> olmayı zorlasa da denklemde yer alan <img src="assets/post_resources/math//a5c4fa0d57ad138fd665616aba5949c5.svg?invert_in_darkmode" align=middle width=206.5521579pt height=24.65753399999998pt/> kısıtı kaynak imgenin izsiz (seamless) bir şekilde hedef imgeye yerleştirilmesini sağlamaktadır. Yöntemin anlaşılması için matematiksel detaylarına devam etmeden önce şu ana kadar verdiğimiz matematiksel ifadeleri bir örnek üzerinde inceleyelim.
 
-| $\mathbf{T}$: Hedef İmge |  $\mathbf{S}$: Kaynak İmge | $\Omega$: Kaynak Maskesi | $\partial \Omega$: Kaynak Maskesi Sınırları | $\mathbf{I}$: Birleştirilmiş İmge
+| <img src="assets/post_resources/math//02f380174e367c8935a57f86907fc7da.svg?invert_in_darkmode" align=middle width=13.15061054999999pt height=22.55708729999998pt/>: Hedef İmge |  <img src="assets/post_resources/math//4870d18d47ab6d0e32510c4b1ccf4927.svg?invert_in_darkmode" align=middle width=10.502226899999991pt height=22.55708729999998pt/>: Kaynak İmge | <img src="assets/post_resources/math//9432d83304c1eb0dcb05f092d30a767f.svg?invert_in_darkmode" align=middle width=11.87217899999999pt height=22.465723500000017pt/>: Kaynak Maskesi | <img src="assets/post_resources/math//e856bc3c05b254c24bba78419c8b1e9a.svg?invert_in_darkmode" align=middle width=21.512584499999992pt height=22.831056599999986pt/>: Kaynak Maskesi Sınırları | <img src="assets/post_resources/math//d8471e559d932f20f66bec32f6002e08.svg?invert_in_darkmode" align=middle width=7.168923299999991pt height=22.55708729999998pt/>: Birleştirilmiş İmge
 :-------:|:----:|:----:|:---:|:---:|
 ![Poisson Image Editing][bear_background] | ![Poisson Image Editing][bear_foreground] | ![Poisson Image Editing][bear_foreground_mask] | ![Poisson Image Editing][bear_foreground_mask_explained] | ![Poisson Image Editing][bear_blended_image] |
 
-Yukarıda verilen imgelerde ilk imge formüllerde $\mathbf{T}$ ile ifade edilen ve kopyalamanın yapılacağı arka plan imgesini göstermektedir. $\mathbf{S}$ kaynak imgesi $\mathbf{T}$ imgesi üzerine yerleştirilmek istenen ön plan imgesini göstermektedir. $\Omega$ ile verilen imgede yer alan beyaz bölgeler ise $\mathbf{S}$ imgesinin hangi piksellerinin $\mathbf{T}$ imgesine yerleştirileceğini gösteren maskedir. $\partial \Omega$ ile verilen imge $\Omega$ maskensinin sınır bölgesini göstermektedir. Son olarak $\mathbf{I}$; $\mathbf{T}$ ve $\mathbf{S}$ imgelerinin $\Omega$ maskesi kullanılarak izsiz bir şekilde birleştirilmesi sonucu elde edilen imgeyi göstermektedir.
+Yukarıda verilen imgelerde ilk imge formüllerde <img src="assets/post_resources/math//02f380174e367c8935a57f86907fc7da.svg?invert_in_darkmode" align=middle width=13.15061054999999pt height=22.55708729999998pt/> ile ifade edilen ve kopyalamanın yapılacağı arka plan imgesini göstermektedir. <img src="assets/post_resources/math//4870d18d47ab6d0e32510c4b1ccf4927.svg?invert_in_darkmode" align=middle width=10.502226899999991pt height=22.55708729999998pt/> kaynak imgesi <img src="assets/post_resources/math//02f380174e367c8935a57f86907fc7da.svg?invert_in_darkmode" align=middle width=13.15061054999999pt height=22.55708729999998pt/> imgesi üzerine yerleştirilmek istenen ön plan imgesini göstermektedir. <img src="assets/post_resources/math//9432d83304c1eb0dcb05f092d30a767f.svg?invert_in_darkmode" align=middle width=11.87217899999999pt height=22.465723500000017pt/> ile verilen imgede yer alan beyaz bölgeler ise <img src="assets/post_resources/math//4870d18d47ab6d0e32510c4b1ccf4927.svg?invert_in_darkmode" align=middle width=10.502226899999991pt height=22.55708729999998pt/> imgesinin hangi piksellerinin <img src="assets/post_resources/math//02f380174e367c8935a57f86907fc7da.svg?invert_in_darkmode" align=middle width=13.15061054999999pt height=22.55708729999998pt/> imgesine yerleştirileceğini gösteren maskedir. <img src="assets/post_resources/math//e856bc3c05b254c24bba78419c8b1e9a.svg?invert_in_darkmode" align=middle width=21.512584499999992pt height=22.831056599999986pt/> ile verilen imge <img src="assets/post_resources/math//9432d83304c1eb0dcb05f092d30a767f.svg?invert_in_darkmode" align=middle width=11.87217899999999pt height=22.465723500000017pt/> maskensinin sınır bölgesini göstermektedir. Son olarak <img src="assets/post_resources/math//d8471e559d932f20f66bec32f6002e08.svg?invert_in_darkmode" align=middle width=7.168923299999991pt height=22.55708729999998pt/>; <img src="assets/post_resources/math//02f380174e367c8935a57f86907fc7da.svg?invert_in_darkmode" align=middle width=13.15061054999999pt height=22.55708729999998pt/> ve <img src="assets/post_resources/math//4870d18d47ab6d0e32510c4b1ccf4927.svg?invert_in_darkmode" align=middle width=10.502226899999991pt height=22.55708729999998pt/> imgelerinin <img src="assets/post_resources/math//9432d83304c1eb0dcb05f092d30a767f.svg?invert_in_darkmode" align=middle width=11.87217899999999pt height=22.465723500000017pt/> maskesi kullanılarak izsiz bir şekilde birleştirilmesi sonucu elde edilen imgeyi göstermektedir.
 
-Denklem \ref{cost} ile verilen maliyet fonksiyonun en küçüklenmesi için ifadeninin gradyanı bulunup sıfıra eşitlenirse; $\nabla \cdot \nabla \mathbf{I} = \nabla \cdot \nabla \mathbf{S}$ olması gerektiği bulunur. Burada $\Delta F = \nabla \cdot \nabla F$, Laplace operatörü olarak bilinmektedir ve iki boyutlu imgeler için 
+Denklem \ref{cost} ile verilen maliyet fonksiyonun en küçüklenmesi için ifadeninin gradyanı bulunup sıfıra eşitlenirse; <img src="assets/post_resources/math//5792f043c755fac168ea90f44cac9478.svg?invert_in_darkmode" align=middle width=118.12743359999999pt height=22.55708729999998pt/> olması gerektiği bulunur. Burada <img src="assets/post_resources/math//c5da027b2a8603a842e0996b4c2719e0.svg?invert_in_darkmode" align=middle width=100.59347594999997pt height=22.465723500000017pt/>, Laplace operatörü olarak bilinmektedir ve iki boyutlu imgeler için 
 
-$$\Delta = \begin{bmatrix}\phantom{+}0 & \phantom{+}1 & \phantom{+}0\\\phantom{+}1 &-4 & \phantom{+}1\\\phantom{+}0 & \phantom{+}1 & \phantom{+}0\end{bmatrix}$$ 
+<p align="center"><img src="assets/post_resources/math//8e9603c61e3d8ac5b2e5c5424901eeae.svg?invert_in_darkmode" align=middle width=153.4247847pt height=59.1786591pt/></p> 
 
-çekirdeği ile evrişim işlemi sonucunda hesaplanır. Burada çözüm hesaplanırken $\partial \Omega$ sınır bölgesinde ise (beyaz bölge) $I(x,y)=T(x,y)$ eşitliğinin sağlanması gerektiği unutulmamalıdır.
+çekirdeği ile evrişim işlemi sonucunda hesaplanır. Burada çözüm hesaplanırken <img src="assets/post_resources/math//e856bc3c05b254c24bba78419c8b1e9a.svg?invert_in_darkmode" align=middle width=21.512584499999992pt height=22.831056599999986pt/> sınır bölgesinde ise (beyaz bölge) <img src="assets/post_resources/math//608ec9e3a2f50544dcfdfbd7d5371820.svg?invert_in_darkmode" align=middle width=118.5939282pt height=24.65753399999998pt/> eşitliğinin sağlanması gerektiği unutulmamalıdır.
 
-Ayrık imgeler için evrişim teorisi kullanılarak $\Delta \mathbf{I} = \Delta \mathbf{S}$ çözümü açık bir şekilde yazılırsa;
+Ayrık imgeler için evrişim teorisi kullanılarak <img src="assets/post_resources/math//9de66ccebf3d9729fd7f613194f5f43d.svg?invert_in_darkmode" align=middle width=66.9861258pt height=22.55708729999998pt/> çözümü açık bir şekilde yazılırsa;
 
-$$
-\begin{aligned}
-4I(x,y)-I(x-1,y)-I(x,y-1)-I(x+1,y)-I(x,y+1)=& \Delta S(x,y) & \text{in} \quad \Omega\\
-I(x,y)=&T(x,y) & \text{on} \quad \partial \Omega
-\end{aligned}
-\label{solution}
-\tag{2}
-$$
+<p align="center"><img src="assets/post_resources/math//f838d613d88492a0fa43975b4c8a3e74.svg?invert_in_darkmode" align=middle width=587.0366848499999pt height=41.09589pt/></p>
 
-elde edilir. Bulunan ifadede kaynak imge girdi olarak verildiğinden $\Delta S(x,y)$ nin hesaplanmasında herhangi bir sıkıntı bulunmamaktadır. $\mathbf{I}$ imgesi ise yukarıda verilen denklem takımı Poisson matrisi ile aşağıdaki şekilde ifade edilerek bulunulabilir.
+elde edilir. Bulunan ifadede kaynak imge girdi olarak verildiğinden <img src="assets/post_resources/math//f9c4c0b92d829c146b5b3fd31dd3b403.svg?invert_in_darkmode" align=middle width=62.86156469999999pt height=24.65753399999998pt/> nin hesaplanmasında herhangi bir sıkıntı bulunmamaktadır. <img src="assets/post_resources/math//d8471e559d932f20f66bec32f6002e08.svg?invert_in_darkmode" align=middle width=7.168923299999991pt height=22.55708729999998pt/> imgesi ise yukarıda verilen denklem takımı Poisson matrisi ile aşağıdaki şekilde ifade edilerek bulunulabilir.
 
-$$
-\underbrace{
-\begin{bmatrix}
-&&&&\dots\\
-&&&&\dots\\
-&&&&\dots\\
-\hline
-&&&&\dots\\
-0 \dots 0 & -1 & 0 \dots 0 & -1 & 4 & -1 & 0 \dots 0 & -1 & 0 \dots 0\\
-&&&&\dots\\
-\hline
-&&&&\dots \\
-&&&&\dots \\
-&&&&\dots \\
-\end{bmatrix}
-}_{\mathbf{P}}
+<p align="center"><img src="assets/post_resources/math//d0c4aa55b5d326fc9b57b86c542e3325.svg?invert_in_darkmode" align=middle width=627.32047455pt height=204.27478665pt/></p>
 
-\underbrace{
-\begin{bmatrix}
-\dots \\ I(x,y-1) \\ \dots\\
-\hline
-I(x-1,y) \\ I(x,y) \\ I(x+1,y)\\ 
-\hline
-\dots \\I(x,y+1) \\ \dots
-\end{bmatrix}
-}_{\mathbf{I(\Omega)}}
-
-=
-
-\underbrace{
-\begin{bmatrix}
-\dots \\ \dots \\ \dots \\
-\hline
-\dots \\ \Delta S(x,y) \\ \dots \\ 
-\hline
-\dots \\ \dots \\ \dots
-\end{bmatrix}
-}_{\Delta \mathbf{S(\Omega)}}
-$$
-
-Yukarıda yer alan $\Delta \mathbf{S(\Omega)} = \mathbf{P} \mathbf{I(\Omega)}$ matris ifadesi $\forall x,y,x-1,x+1,y-1,y+1 \; \in \Omega$ olması durumunda geçerlidir. Sınır bölgeleri için $I(x,y) = T(x,y)$ kısıtı bulunduğundan bu noktalar için ifade küçük farklılıklar gösterecektir. Aşağıda örnek maskeden kesilen küçük bir imge parçası için $\forall x,y,x-1,x+1,y-1,y+1 \; \in \Omega$ koşulunun sağlanmaması durumunda denklemin nasıl yazılacağı incelenecektir.
+Yukarıda yer alan <img src="assets/post_resources/math//75841effe09b06316e82067ffe8d9937.svg?invert_in_darkmode" align=middle width=119.08641359999997pt height=24.65753399999998pt/> matris ifadesi <img src="assets/post_resources/math//8b4b4cb3dea7535729aa929158ab134d.svg?invert_in_darkmode" align=middle width=249.56546505pt height=22.831056599999986pt/> olması durumunda geçerlidir. Sınır bölgeleri için <img src="assets/post_resources/math//4f8861683b2b477a7b0d88ed235d4fcb.svg?invert_in_darkmode" align=middle width=118.5939282pt height=24.65753399999998pt/> kısıtı bulunduğundan bu noktalar için ifade küçük farklılıklar gösterecektir. Aşağıda örnek maskeden kesilen küçük bir imge parçası için <img src="assets/post_resources/math//8b4b4cb3dea7535729aa929158ab134d.svg?invert_in_darkmode" align=middle width=249.56546505pt height=22.831056599999986pt/> koşulunun sağlanmaması durumunda denklemin nasıl yazılacağı incelenecektir.
 
 ![Poisson Image Editing Border Conditions][poisson_image_editing_border]
 
-Verilen imgede gri bölgeler $\Omega$ imgesindeki siyah (hedef imgeden seçilecek) pikselleri, beyaz (kaynak imgeden seçilecek) pikselleri göstermektedir. Örnek olarak imgede $x,y$ ile işaretlenen piksel için Denklem \ref{solution} ile verilen eşitliği yazarsak;
+Verilen imgede gri bölgeler <img src="assets/post_resources/math//9432d83304c1eb0dcb05f092d30a767f.svg?invert_in_darkmode" align=middle width=11.87217899999999pt height=22.465723500000017pt/> imgesindeki siyah (hedef imgeden seçilecek) pikselleri, beyaz (kaynak imgeden seçilecek) pikselleri göstermektedir. Örnek olarak imgede <img src="assets/post_resources/math//0acac2a2d5d05a8394e21a70a71041b4.svg?invert_in_darkmode" align=middle width=25.350096749999988pt height=14.15524440000002pt/> ile işaretlenen piksel için Denklem \ref{solution} ile verilen eşitliği yazarsak;
 
-$$
-\begin{aligned}
-4I(x,y)-I(x-1,y)-I(x,y-1)-I(x+1,y)-I(x,y+1)=& \Delta S(x,y) & \text{in} \quad \Omega\\
-I(x,y)=&T(x,y) & \text{on} \quad \partial \Omega
-\end{aligned}
-$$
+<p align="center"><img src="assets/post_resources/math//a82197086b51efde4d391e4e41270a32.svg?invert_in_darkmode" align=middle width=587.0366848499999pt height=41.09589pt/></p>
 
-elde edilir. Burada $(x-1,y)$ ve $(x,y-1)$ $\partial \Omega$ sınırında bulunduğundan kısıt gereği $I(x-1,y) = T(x-1,y)$ ve $I(x,y-1) = T(x,y-1)$ olmalıdır. Bu bilgi yukarıdaki eşitlikte yerine yazılırsa;
+elde edilir. Burada <img src="assets/post_resources/math//6322fde8c890aab45b99700c95a4dc13.svg?invert_in_darkmode" align=middle width=66.44591084999999pt height=24.65753399999998pt/> ve <img src="assets/post_resources/math//09353b695ba9ba9285a8b48b0763d588.svg?invert_in_darkmode" align=middle width=66.44591084999999pt height=24.65753399999998pt/> <img src="assets/post_resources/math//e856bc3c05b254c24bba78419c8b1e9a.svg?invert_in_darkmode" align=middle width=21.512584499999992pt height=22.831056599999986pt/> sınırında bulunduğundan kısıt gereği <img src="assets/post_resources/math//d243c448c43fb0888807eeafea85381d.svg?invert_in_darkmode" align=middle width=175.21472924999998pt height=24.65753399999998pt/> ve <img src="assets/post_resources/math//b5d919638f3e5789ca498aeecbf03455.svg?invert_in_darkmode" align=middle width=175.21472924999998pt height=24.65753399999998pt/> olmalıdır. Bu bilgi yukarıdaki eşitlikte yerine yazılırsa;
 
-$$
-\begin{aligned}
-4I(x,y)-T(x-1,y)-T(x,y-1)-I(x+1,y)-I(x,y+1)=& \Delta S(x,y) \\
-4I(x,y)-I(x+1,y)-I(x,y+1)=& \Delta S(x,y) + T(x-1,y) + T(x,y-1)
-\end{aligned}
-$$
+<p align="center"><img src="assets/post_resources/math//660dd6646ee3b16de3f15b7d82f7e2f1.svg?invert_in_darkmode" align=middle width=718.89525015pt height=41.09589pt/></p>
 
 elde edilir. Bu durumda yukarıda tanımlanan matris çarpımı ilgili satır için aşağıdaki şekilde yazılır.
 
-$$
-\begin{bmatrix}
-&&&&\dots\\
-&&&&\dots\\
-&&&&\dots\\
-\hline
-&&&&\dots\\
-0 \dots 0 & 0 & 0 \dots 0 & 0 & 4 & -1 & 0 \dots 0 & -1 & 0 \dots 0\\
-&&&&\dots\\
-\hline
-&&&&\dots \\
-&&&&\dots \\
-&&&&\dots \\
-\end{bmatrix}
+<p align="center"><img src="assets/post_resources/math//175ba0a38b900b508af1202f52e9b74c.svg?invert_in_darkmode" align=middle width=798.60229515pt height=177.5360268pt/></p>
 
-\begin{bmatrix}
-\dots \\ \dots \\ \dots\\
-\hline
-\dots \\ I(x,y) \\ I(x+1,y)\\ 
-\hline
-\dots \\I(x,y+1) \\ \dots
-\end{bmatrix}
+<img src="assets/post_resources/math//9432d83304c1eb0dcb05f092d30a767f.svg?invert_in_darkmode" align=middle width=11.87217899999999pt height=22.465723500000017pt/> maskesi içerisinde yer alan tüm pikseller için yukarıda verilene benzer şekilde matris eşitlikleri yazıldığında, aranılan <img src="assets/post_resources/math//d8471e559d932f20f66bec32f6002e08.svg?invert_in_darkmode" align=middle width=7.168923299999991pt height=22.55708729999998pt/> imgesi <img src="assets/post_resources/math//a4fca563d0e5c458d12c0f9e3152c9e6.svg?invert_in_darkmode" align=middle width=223.63513095000002pt height=26.76175259999998pt/> işlemi ile bulunabilir.
 
-=
-\begin{bmatrix}
-\dots \\ \dots \\ \dots \\
-\hline
-\dots \\ \Delta S(x,y) + T(x-1,y) + T(x,y-1)\\ \dots \\ 
-\hline
-\dots \\ \dots \\ \dots
-\end{bmatrix}
-$$
-
-$\Omega$ maskesi içerisinde yer alan tüm pikseller için yukarıda verilene benzer şekilde matris eşitlikleri yazıldığında, aranılan $\mathbf{I}$ imgesi $\mathbf{I(\Omega)} = \mathbf{P}^{-1} \left( \mathbf{\Delta S(\Omega)} + \mathbf{T(\partial \Omega)}\right)$ işlemi ile bulunabilir.
-
-Önerilen yöntem ve çözümü oldukça kolay görünse de $\mathbf{P}$ matrisinin boyutu maskede yer alan beyaz piksellerin sayısı ile belirlendiğinden matris tersi bulma işlemi oldukça uzun süreler almaktadır. $\mathbf{P}$ matrisi dikkatli incelendiğinde her satırında en fazla $5$ elamanın sıfırdan farklı olduğu görülür. $\mathbf{P}$ matrisinin bu ayrık yapısı sayesinde matris tersi bulma işlemi Gauss-Seidel veya SOR (Successive Over-Relaxation) gibi iteratif yöntemlerle hızlı bir şekilde hesaplanabilmektedir. Bu yazıda ayrık matrisin tersinin bulunması için Successive Over-Relaxation yöntemi kullanılmıştır.
+Önerilen yöntem ve çözümü oldukça kolay görünse de <img src="assets/post_resources/math//384591906555413c452c93e493b2d4ec.svg?invert_in_darkmode" align=middle width=12.92230829999999pt height=22.55708729999998pt/> matrisinin boyutu maskede yer alan beyaz piksellerin sayısı ile belirlendiğinden matris tersi bulma işlemi oldukça uzun süreler almaktadır. <img src="assets/post_resources/math//384591906555413c452c93e493b2d4ec.svg?invert_in_darkmode" align=middle width=12.92230829999999pt height=22.55708729999998pt/> matrisi dikkatli incelendiğinde her satırında en fazla <img src="assets/post_resources/math//9612eecfec9dadf1a81d296bd2473777.svg?invert_in_darkmode" align=middle width=8.219209349999991pt height=21.18721440000001pt/> elamanın sıfırdan farklı olduğu görülür. <img src="assets/post_resources/math//384591906555413c452c93e493b2d4ec.svg?invert_in_darkmode" align=middle width=12.92230829999999pt height=22.55708729999998pt/> matrisinin bu ayrık yapısı sayesinde matris tersi bulma işlemi Gauss-Seidel veya SOR (Successive Over-Relaxation) gibi iteratif yöntemlerle hızlı bir şekilde hesaplanabilmektedir. Bu yazıda ayrık matrisin tersinin bulunması için Successive Over-Relaxation yöntemi kullanılmıştır.
 
 ### Successive Over-Relaxation
 
-SOR yöntemi $A\mathbf {x}=\mathbf {b}$ şeklinde verilen doğrusal denklem takımlarının çözümü için kullanılan bir yöntemdir. Yöntemin çalışma mantığının anlaşılması için bir $A$ kare matrisinin diyagonal $D$, alt üçgen $L$ ve üst üçgen $U$ matrislerinin toplamı şeklinde yazdığımızı düşünelim.
+SOR yöntemi <img src="assets/post_resources/math//ef45882fd969dc609b77fd43375ec497.svg?invert_in_darkmode" align=middle width=54.72577274999999pt height=22.831056599999986pt/> şeklinde verilen doğrusal denklem takımlarının çözümü için kullanılan bir yöntemdir. Yöntemin çalışma mantığının anlaşılması için bir <img src="assets/post_resources/math//53d147e7f3fe6e47ee05b88b166bd3f6.svg?invert_in_darkmode" align=middle width=12.32879834999999pt height=22.465723500000017pt/> kare matrisinin diyagonal <img src="assets/post_resources/math//78ec2b7008296ce0561cf83393cb746d.svg?invert_in_darkmode" align=middle width=14.06623184999999pt height=22.465723500000017pt/>, alt üçgen <img src="assets/post_resources/math//ddcb483302ed36a59286424aa5e0be17.svg?invert_in_darkmode" align=middle width=11.18724254999999pt height=22.465723500000017pt/> ve üst üçgen <img src="assets/post_resources/math//6bac6ec50c01592407695ef84f457232.svg?invert_in_darkmode" align=middle width=13.01596064999999pt height=22.465723500000017pt/> matrislerinin toplamı şeklinde yazdığımızı düşünelim.
 
-$$
-\underbrace{
-\begin{bmatrix}
-a_{11} & \dots & a_{1n} \\
-\vdots & \ddots & \vdots \\ 
-a_{n1} & \dots & a_{nn}
-\end{bmatrix}
-}_{A}
-=
-\underbrace{
-\begin{bmatrix}
-a_{11} & \dots & 0 \\
-\vdots & \ddots & \vdots \\ 
-0 & \dots & a_{nn}
-\end{bmatrix}
-}_{D}
-+
-\underbrace{
-\begin{bmatrix}
-0 & \dots & 0 \\
-\vdots & \ddots & \vdots \\ 
-a_{n1} & \dots & 0
-\end{bmatrix}
-}_{L}
-+
-\underbrace{
-\begin{bmatrix}
-0 & \dots & a_{1n} \\
-\vdots & \ddots & \vdots \\ 
-0 & \dots & 0
-\end{bmatrix}
-}_{U}
-$$
+<p align="center"><img src="assets/post_resources/math//cae68cd5fedd9e4867f60c98f6b598b1.svg?invert_in_darkmode" align=middle width=528.44564025pt height=92.01856785pt/></p>
 
-$A$ matrisi bu şekilde yazıldıktan sonra $\omega > 1$ esnetme katsayısı kullanılarak $A\mathbf {x}=\mathbf {b}$ ifadesi
+<img src="assets/post_resources/math//53d147e7f3fe6e47ee05b88b166bd3f6.svg?invert_in_darkmode" align=middle width=12.32879834999999pt height=22.465723500000017pt/> matrisi bu şekilde yazıldıktan sonra <img src="assets/post_resources/math//40694a9fb463b0a0f8e93feba4d7cd85.svg?invert_in_darkmode" align=middle width=40.95874694999999pt height=21.18721440000001pt/> esnetme katsayısı kullanılarak <img src="assets/post_resources/math//ef45882fd969dc609b77fd43375ec497.svg?invert_in_darkmode" align=middle width=54.72577274999999pt height=22.831056599999986pt/> ifadesi
 
-$$(D+\omega L)\mathbf {x} = \omega \mathbf {b} - \left[\omega U+(\omega -1)D \right]\mathbf {x}$$ 
+<p align="center"><img src="assets/post_resources/math//28dc96aafcf8025d8dc46cf27720dcda.svg?invert_in_darkmode" align=middle width=274.0242186pt height=16.438356pt/></p> 
 
-şeklinde düzenlenebilir. Burada $(D+\omega L)$ ifadesinin sol tarafa atılarak $\mathbf {x}$ in yalnız bırakılması sonucunda iteratif bir şekilde çalışan SOR yöntemi elde edilmiş olur.
+şeklinde düzenlenebilir. Burada <img src="assets/post_resources/math//850c466a718f6f9cbdfc84955fb887ba.svg?invert_in_darkmode" align=middle width=68.95200509999998pt height=24.65753399999998pt/> ifadesinin sol tarafa atılarak <img src="assets/post_resources/math//2e01c12b986967fd1f85e7377a7e5a70.svg?invert_in_darkmode" align=middle width=9.97711604999999pt height=14.611878600000017pt/> in yalnız bırakılması sonucunda iteratif bir şekilde çalışan SOR yöntemi elde edilmiş olur.
 
-$$\mathbf {x}^{k+1} = (D+\omega L)^{-1} \left( \omega \mathbf {b} - \left[\omega U+(\omega -1)D \right]\mathbf {x}^{k} \right)$$
+<p align="center"><img src="assets/post_resources/math//40860759083b3ea0e1cb399c65113a8a.svg?invert_in_darkmode" align=middle width=342.30071205pt height=20.5316694pt/></p>
 
-Elde edilen denklemde yer alan $D+\omega L$ ifadesi alt üçgen bir matris olduğundan tersinin hesaplanması işlemi ileri koyma tekniği ile kolaylıkla yapılabilir. SOR yöntemi bu tekniği de içerecek şekilde güncellenirse çözüm;
+Elde edilen denklemde yer alan <img src="assets/post_resources/math//40c63741a79a1209bcb59426eeef3440.svg?invert_in_darkmode" align=middle width=56.16657089999998pt height=22.465723500000017pt/> ifadesi alt üçgen bir matris olduğundan tersinin hesaplanması işlemi ileri koyma tekniği ile kolaylıkla yapılabilir. SOR yöntemi bu tekniği de içerecek şekilde güncellenirse çözüm;
 
-$$
-x_{i}^{k+1}=(1-\omega )x_{i}^{k}+{\frac {\omega }{a_{ii}}} \left(b_{i}-\sum_{j < i} a_{ij} x_{j}^{k+1} - \sum_{j > i}a_{ij}x_{j}^{k}\right), \; i=1,2,\ldots,n.
-$$
+<p align="center"><img src="assets/post_resources/math//120229188a409216f6af37a1a5065f49.svg?invert_in_darkmode" align=middle width=514.52098995pt height=59.1786591pt/></p>
 
-eşitliği ile elde edilir. Burada her ne kadar $i=1,2,\ldots,n$ şeklinde yazılsa da $\mathbf{P}$ matrisi ayrık yapıda olduğundan sadece sıfırdan farklı elemanların döngüde kullanılması yeterlidir. $\mathbf{P}$ matrisinin her satırında da en fazla $5$ sıfırdan faklı sayı yer aldığından her bir iterasyon matris boyutundan bağımsız şekilde hesaplanabilmektedir. 
+eşitliği ile elde edilir. Burada her ne kadar <img src="assets/post_resources/math//803cf4a2b0c2d773278064977aef7cfc.svg?invert_in_darkmode" align=middle width=97.7214513pt height=21.68300969999999pt/> şeklinde yazılsa da <img src="assets/post_resources/math//384591906555413c452c93e493b2d4ec.svg?invert_in_darkmode" align=middle width=12.92230829999999pt height=22.55708729999998pt/> matrisi ayrık yapıda olduğundan sadece sıfırdan farklı elemanların döngüde kullanılması yeterlidir. <img src="assets/post_resources/math//384591906555413c452c93e493b2d4ec.svg?invert_in_darkmode" align=middle width=12.92230829999999pt height=22.55708729999998pt/> matrisinin her satırında da en fazla <img src="assets/post_resources/math//9612eecfec9dadf1a81d296bd2473777.svg?invert_in_darkmode" align=middle width=8.219209349999991pt height=21.18721440000001pt/> sıfırdan faklı sayı yer aldığından her bir iterasyon matris boyutundan bağımsız şekilde hesaplanabilmektedir. 
 
-Yazıda anlatılan yöntemin gerçeklenmesi için IMLAB kütüphanesi kullanılmıştır. Kütüphanede ayrık matris tipi bulunmadığından kod içerisinde `struct poisson_element` tipinde bir veri tipi tanımlanmıştır. Bu veri tipi $x,y$ koordinatı için $\mathbf{P}$ matrisinde yer alması gereken katsayıları tutmaktadır. 
+Yazıda anlatılan yöntemin gerçeklenmesi için IMLAB kütüphanesi kullanılmıştır. Kütüphanede ayrık matris tipi bulunmadığından kod içerisinde `struct poisson_element` tipinde bir veri tipi tanımlanmıştır. Bu veri tipi <img src="assets/post_resources/math//0acac2a2d5d05a8394e21a70a71041b4.svg?invert_in_darkmode" align=middle width=25.350096749999988pt height=14.15524440000002pt/> koordinatı için <img src="assets/post_resources/math//384591906555413c452c93e493b2d4ec.svg?invert_in_darkmode" align=middle width=12.92230829999999pt height=22.55708729999998pt/> matrisinde yer alması gereken katsayıları tutmaktadır. 
 
-$\mathbf{I(\Omega)} = \mathbf{P}^{-1} \left( \mathbf{\Delta S(\Omega)} + \mathbf{T(\partial \Omega)}\right)$ işleminin hesaplanması için SOR başlığı altında anlatılan yöntem `matrix_t* poisson_solver(vector_t *P, matrix_t *S)` fonksiyonunda gerçeklenmiştir. Çalışmada iterasyon sayısı $K=4000$ ve gevşeme katsayısı $\omega=1.8$ olarak kullanılmıştır.
+<img src="assets/post_resources/math//a4fca563d0e5c458d12c0f9e3152c9e6.svg?invert_in_darkmode" align=middle width=223.63513095000002pt height=26.76175259999998pt/> işleminin hesaplanması için SOR başlığı altında anlatılan yöntem `matrix_t* poisson_solver(vector_t *P, matrix_t *S)` fonksiyonunda gerçeklenmiştir. Çalışmada iterasyon sayısı <img src="assets/post_resources/math//392bd1b18675ddc1f643e2ec00f65d06.svg?invert_in_darkmode" align=middle width=69.93146819999998pt height=22.465723500000017pt/> ve gevşeme katsayısı <img src="assets/post_resources/math//b92e3f42b625f6c825ff7db636ff3275.svg?invert_in_darkmode" align=middle width=53.744179499999994pt height=21.18721440000001pt/> olarak kullanılmıştır.
 
 Aşağıda yöntemin farklı imgeler üzerinde çalıştırılması ile elde edilen sonuçlar paylaşılmıştır. Verilen örneklerden de görüldüğü üzere yöntem kaynak imgenin doku bilgisini, hedef imgenin renk bilgisi ile birleştirerek yeni bir imge oluşturmaktadır.
 
-| $\mathbf{T}$: Hedef İmge |  $\mathbf{S}$: Kaynak İmge | $\Omega$: Kaynak Maskesi | $\mathbf{I}$: Birleştirilmiş İmge
+| <img src="assets/post_resources/math//02f380174e367c8935a57f86907fc7da.svg?invert_in_darkmode" align=middle width=13.15061054999999pt height=22.55708729999998pt/>: Hedef İmge |  <img src="assets/post_resources/math//4870d18d47ab6d0e32510c4b1ccf4927.svg?invert_in_darkmode" align=middle width=10.502226899999991pt height=22.55708729999998pt/>: Kaynak İmge | <img src="assets/post_resources/math//9432d83304c1eb0dcb05f092d30a767f.svg?invert_in_darkmode" align=middle width=11.87217899999999pt height=22.465723500000017pt/>: Kaynak Maskesi | <img src="assets/post_resources/math//d8471e559d932f20f66bec32f6002e08.svg?invert_in_darkmode" align=middle width=7.168923299999991pt height=22.55708729999998pt/>: Birleştirilmiş İmge
 :-------:|:----:|:----:|:---:|:---:|
 ![Poisson Image Editing][bear_background] | ![Poisson Image Editing][bear_foreground] | ![Poisson Image Editing][bear_foreground_mask] | ![Poisson Image Editing][bear_blended_image] |
 ![Poisson Image Editing][turkey_background] | ![Poisson Image Editing][turkey_foreground] | ![Poisson Image Editing][turkey_foreground_mask] | ![Poisson Image Editing][turkey_blended_image] |
@@ -222,19 +97,19 @@ Yazıda yer alan analizlerin yapıldığı kod parçaları, görseller ve kullan
 * Pérez, Patrick, Michel Gangnet, and Andrew Blake. "Poisson image editing." ACM SIGGRAPH 2003 Papers. 2003. 313-318.
 
 [RESOURCES]: # (List of the resources used by the blog post)
-[bear_background]: resources//bear_background.png
-[bear_foreground]: resources//bear_foreground.png
-[bear_foreground_mask]: resources//bear_foreground_mask.png
-[bear_foreground_mask_explained]: resources//bear_foreground_mask_explained.png
-[bear_blended_image]: resources//bear_blended_image.png
-[poisson_image_editing_border]: resources//poisson_image_editing.svg
+[bear_background]: /assets/post_resources/poisson_image_editing/bear_background.png
+[bear_foreground]: /assets/post_resources/poisson_image_editing/bear_foreground.png
+[bear_foreground_mask]: /assets/post_resources/poisson_image_editing/bear_foreground_mask.png
+[bear_foreground_mask_explained]: /assets/post_resources/poisson_image_editing/bear_foreground_mask_explained.png
+[bear_blended_image]: /assets/post_resources/poisson_image_editing/bear_blended_image.png
+[poisson_image_editing_border]: /assets/post_resources/poisson_image_editing/poisson_image_editing.svg
 
-[turkey_background]: resources//turkey_background.png
-[turkey_foreground]: resources//turkey_foreground.png
-[turkey_foreground_mask]: resources//turkey_foreground_mask.png
-[turkey_blended_image]: resources//turkey_blended_image.png
+[turkey_background]: /assets/post_resources/poisson_image_editing/turkey_background.png
+[turkey_foreground]: /assets/post_resources/poisson_image_editing/turkey_foreground.png
+[turkey_foreground_mask]: /assets/post_resources/poisson_image_editing/turkey_foreground_mask.png
+[turkey_blended_image]: /assets/post_resources/poisson_image_editing/turkey_blended_image.png
 
-[tshirt_background]: resources//tshirt_background.png
-[tshirt_foreground]: resources//tshirt_foreground.png
-[tshirt_foreground_mask]: resources//tshirt_foreground_mask.png
-[tshirt_blended_image]: resources//tshirt_blended_image.png
+[tshirt_background]: /assets/post_resources/poisson_image_editing/tshirt_background.png
+[tshirt_foreground]: /assets/post_resources/poisson_image_editing/tshirt_foreground.png
+[tshirt_foreground_mask]: /assets/post_resources/poisson_image_editing/tshirt_foreground_mask.png
+[tshirt_blended_image]: /assets/post_resources/poisson_image_editing/tshirt_blended_image.png
